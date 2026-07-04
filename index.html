@@ -118,15 +118,6 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 /* ==========================================================================
    3. AMBIENT TEXTURE
    ========================================================================== */
-.wood-floor{
-  position:fixed; left:0; right:0; bottom:0; height:14vh; min-height:90px;
-  background:
-    repeating-linear-gradient(90deg, rgba(0,0,0,.08) 0 2px, transparent 2px 140px),
-    linear-gradient(180deg, var(--floor-3), var(--floor-2) 55%, var(--floor-1));
-  box-shadow: inset 0 12px 30px rgba(0,0,0,.35);
-  z-index:0;
-  pointer-events:none;
-}
 .wall-grain{
   position:fixed; inset:0; z-index:0; pointer-events:none; opacity:.5;
   background-image: radial-gradient(circle at 15% 10%, rgba(255,255,255,.6), transparent 40%),
@@ -328,11 +319,17 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   background:linear-gradient(180deg, rgba(255,253,248,.96), rgba(248,246,241,.92));
   border-right:1px solid var(--wall-shadow);
   backdrop-filter:blur(6px);
-  z-index:40;
+  z-index:80;
   display:flex; flex-direction:column;
   padding:30px 0;
-  transition:opacity .8s ease, visibility .8s ease;
+  transition:opacity .8s ease, visibility .8s ease, transform .4s var(--ease-museum);
 }
+.nav-close{
+  display:none; align-self:flex-end; margin:0 18px 6px auto;
+  width:34px; height:34px; border-radius:50%; border:none; background:var(--wall-deep);
+  color:var(--ink); align-items:center; justify-content:center;
+}
+.nav-close svg{ width:16px; height:16px; }
 .nav-brand{
   font-family:var(--font-display); font-weight:600; font-size:1.05rem;
   padding:0 26px 22px; border-bottom:1px solid var(--wall-shadow);
@@ -365,16 +362,40 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   position:fixed; left:0; right:0; bottom:0; z-index:40;
   background:rgba(255,253,248,.97); backdrop-filter:blur(8px);
   border-top:1px solid var(--wall-shadow);
-  padding:10px 8px calc(10px + env(safe-area-inset-bottom));
+  padding:12px 12px calc(12px + env(safe-area-inset-bottom));
   overflow-x:auto; white-space:nowrap;
   transition:opacity .8s ease, visibility .8s ease;
 }
-.nav-mobile .nav-item{ display:inline-flex; width:auto; margin-right:6px; white-space:nowrap; }
+.nav-mobile .nav-item{
+  display:inline-flex; align-items:center; width:auto; white-space:nowrap;
+  margin-right:10px; padding:11px 16px; border-radius:22px; font-size:13px;
+  border:1px solid transparent;
+}
+.nav-mobile .nav-item .num{ font-size:10px; }
+.nav-mobile .nav-item:hover{ border-color:var(--wall-shadow); }
+.nav-mobile .nav-item.active{ border-color:var(--ink); }
+.nav-mobile .nav-item:last-child{ margin-right:2px; }
+
+/* hamburger + backdrop for the mobile slide-in sidebar */
+.hamburger{
+  display:none; position:fixed; top:18px; left:18px; z-index:90;
+  width:44px; height:44px; border-radius:50%;
+  background:var(--ink); color:var(--paper); border:1px solid rgba(255,255,255,.15);
+  align-items:center; justify-content:center; box-shadow:var(--shadow-frame);
+  transition:opacity .8s ease, visibility .8s ease;
+}
+.hamburger svg{ width:19px; height:19px; }
+.nav-backdrop{
+  display:none; position:fixed; inset:0; z-index:70;
+  background:rgba(10,7,4,.5);
+  opacity:0; visibility:hidden; transition:opacity .4s ease, visibility .4s ease;
+}
+.nav-backdrop.open{ opacity:1; visibility:visible; }
 
 /* fade navigation away in the final hall */
-#museum.is-final .nav-rail,
 #museum.is-final .nav-mobile,
 #museum.is-final .map-toggle{ opacity:0; visibility:hidden; pointer-events:none; }
+.hamburger.is-final, .nav-rail.is-final{ opacity:0; visibility:hidden; pointer-events:none; }
 
 .room{
   min-height:100vh;
@@ -404,7 +425,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 /* ==========================================================================
    6. FRAMES & PLAQUES
    ========================================================================== */
-.frame-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:44px 34px; }
+.frame-grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr)); gap:64px 34px; }
 
 .exhibit{ opacity:0; transform:translateY(18px); transition:opacity .7s var(--ease-museum), transform .7s var(--ease-museum); }
 .exhibit.in-view{ opacity:1; transform:translateY(0); }
@@ -481,7 +502,6 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .classmates-wall{ column-count:4; column-gap:28px; }
 @media (max-width:1100px){ .classmates-wall{ column-count:3; } }
 @media (max-width:760px){ .classmates-wall{ column-count:2; } }
-@media (max-width:460px){ .classmates-wall{ column-count:1; max-width:340px; margin:0 auto; } }
 
 .classmate{ break-inside:avoid; margin-bottom:30px; opacity:0; transform:translateY(16px); transition:opacity .6s var(--ease-museum), transform .6s var(--ease-museum); }
 .classmate.in-view{ opacity:1; transform:translateY(0); }
@@ -562,7 +582,12 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .map-toggle:hover{ transform:translateY(-3px) scale(1.04); }
 .map-toggle svg{ width:19px; height:19px; }
 .map-toggle span{ font-family:var(--font-label); font-size:8.5px; letter-spacing:.1em; text-transform:uppercase; }
-@media (max-width:880px){ .map-toggle{ bottom:94px; } }
+@media (max-width:880px){ .map-toggle{ bottom:92px; } }
+@media (max-width:680px){
+  .map-toggle{ width:46px; height:46px; right:16px; bottom:88px; gap:1px; }
+  .map-toggle svg{ width:16px; height:16px; }
+  .map-toggle span{ font-size:7.5px; }
+}
 
 .map-modal{
   position:fixed; inset:0; z-index:210; background:rgba(10,7,4,.82);
@@ -601,19 +626,49 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .map-room.is-final .num{ color:var(--brass-light); }
 .map-room.is-secret{ background:var(--wine); color:var(--paper); border-color:var(--wine); }
 .map-room.is-secret .num{ color:#e9b8bd; }
-@media (max-width:560px){ .map-room{ min-width:74px; padding:8px 8px; } .map-room .name{ font-size:10.5px; } }
+@media (max-width:680px){
+  /* the hand-placed floor-plan positions only work with enough width;
+     on phones, fall back to a clean, evenly-spaced grid instead */
+  .map-plan{ aspect-ratio:auto; display:grid; grid-template-columns:repeat(2,1fr); gap:14px; }
+  .map-plan svg{ display:none; }
+  .map-room{
+    position:static; transform:none; width:100%; min-width:0;
+    padding:16px 10px; box-sizing:border-box;
+  }
+  .map-room:hover{ transform:scale(1.03); }
+}
 
 /* ==========================================================================
    13. RESPONSIVE
    ========================================================================== */
 @media (max-width:880px){
-  .nav-rail{ display:none; }
+  .nav-rail{
+    transform:translateX(-100%);
+    box-shadow:0 0 50px rgba(0,0,0,.35);
+  }
+  .nav-rail.open{ transform:translateX(0); }
+  .nav-close{ display:flex; }
+  .hamburger{ display:flex; }
+  .nav-backdrop{ display:block; }
   .nav-mobile{ display:block; }
-  #museum{ padding-left:0; padding-bottom:78px; }
+  #museum{ padding-left:0; padding-bottom:86px; }
   .room{ padding:70px 6vw 100px; }
 }
+@media (max-width:680px){
+  /* one artwork per row, generous breathing room, no squeezing */
+  .frame-grid{ grid-template-columns:1fr; gap:64px 0; }
+  .frame{ max-width:420px; margin:0 auto; }
+  .exhibit.featured .frame{ max-width:460px; }
+  .classmates-wall{ column-count:1; max-width:380px; margin:0 auto; }
+  .sound-toggle{ top:16px; right:16px; padding:8px 12px; }
+  .hamburger{ top:16px; left:16px; width:42px; height:42px; }
+
+  /* cleaner, smaller map button — icon only, no crowding */
+  .map-toggle{ width:44px; height:44px; right:14px; bottom:92px; gap:0; }
+  .map-toggle svg{ width:18px; height:18px; }
+  .map-toggle span{ display:none; }
+}
 @media (max-width:520px){
-  .frame-grid{ grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:30px 18px; }
   .sound-toggle{ top:16px; right:16px; padding:8px 12px; }
 }
 
@@ -626,7 +681,6 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 <a class="skip-link" href="#museum">Skip to museum</a>
 
 <div class="wall-grain" aria-hidden="true"></div>
-<div class="wood-floor" aria-hidden="true"></div>
 
 <!-- ==========================================================================
      ENTRANCE — museum facade with doors
@@ -635,12 +689,12 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   <div class="motes" id="motes" aria-hidden="true"></div>
 
   <button class="sound-toggle" id="soundToggleEntrance" aria-pressed="false" aria-label="Toggle ambient museum music">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/></svg>
+    <svg id="soundIconEntrance" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/></svg>
     <span id="soundLabelEntrance">Sound off</span>
   </button>
 
   <div class="facade" id="facade">
-    <span class="entrance-eyebrow">Est. September 2025</span>
+    <span class="entrance-eyebrow">Est. July 2026</span>
     <h1 class="entrance-title">CRMEF Memory Museum</h1>
     <p class="entrance-subtitle">A journey through one unforgettable year.</p>
 
@@ -663,24 +717,36 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   <div class="hallway-label" id="hallwayLabel">Walking on…</div>
 </div>
 
+<!-- Mobile hamburger — opens the sidebar as a slide-in drawer -->
+<button class="hamburger" id="hamburgerBtn" aria-label="Open museum menu" aria-expanded="false">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<!-- The sidebar lives outside #museum on purpose: #museum has its own
+     z-index/stacking context, which would otherwise trap the sidebar
+     underneath the mobile backdrop and make it unclickable. -->
+<nav class="nav-rail" id="navRail" aria-label="Museum galleries">
+  <button class="nav-close" id="navCloseBtn" aria-label="Close menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>
+  </button>
+  <div class="nav-brand" id="navBrand" tabindex="0" role="button" aria-label="Return to entrance">
+    CRMEF Memory Museum
+    <span>Permanent Collection</span>
+  </div>
+  <ul class="nav-list" id="navList"><!-- injected by JS --></ul>
+  <div class="nav-foot">
+    <button class="nav-sound" id="soundToggleRail" aria-pressed="false">
+      <svg id="soundIconRail" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/></svg>
+      <span id="soundLabelRail">Sound off</span>
+    </button>
+  </div>
+</nav>
+
 <!-- ==========================================================================
      MUSEUM
      ========================================================================== -->
 <div id="museum" aria-hidden="true">
-
-  <nav class="nav-rail" id="navRail" aria-label="Museum galleries">
-    <div class="nav-brand" id="navBrand" tabindex="0" role="button" aria-label="Return to entrance">
-      CRMEF Memory Museum
-      <span>Permanent Collection</span>
-    </div>
-    <ul class="nav-list" id="navList"><!-- injected by JS --></ul>
-    <div class="nav-foot">
-      <button class="nav-sound" id="soundToggleRail" aria-pressed="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/></svg>
-        <span id="soundLabelRail">Sound off</span>
-      </button>
-    </div>
-  </nav>
 
   <nav class="nav-mobile" id="navMobile" aria-label="Museum galleries (mobile)"></nav>
 
@@ -689,6 +755,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 
 <!-- Museum map -->
 <button class="map-toggle" id="mapToggle" aria-label="Open museum map">
+
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
   <span>Map</span>
 </button>
@@ -736,7 +803,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 
 <!-- ambient audio -->
 <audio id="ambientAudio" loop preload="none">
-  <source src="Mosaic Hall.mp3" type="audio/mpeg">
+  <source src="Forever Within Us.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -775,20 +842,24 @@ const MUSEUM_DATA = {
       quoteAuthor: 'Field trip notes — Marrakesh',
       theme: 'light',
       photos: [
-        photo('Bahia Palace 1.JPEG','Take 1','','', true),
-        photo('Bahia Palace 2.JPEG','Take 2','',''),
-        photo('Bahia Palace 3.JPEG','Take 3','',''),
-        photo('Bahia Palace 4.JPEG','Take 4','',''),
-        photo('Bahia Palace 5.JPEG','Take 5','',''),
-        photo('Bahia Palace 6.JPEG','Take 6','',''),
-        photo('Bahia Palace 7.JPEG','Take 7','',''),
-        photo('Bahia Palace 8.JPEG','Take 8','',''),
-        photo('Bahia Palace 9.JPEG','Take 9','',''),
-        photo('Bahia Palace 10.JPEG','Take 10','',''),
-        photo('Bahia Palace 11.JPEG','Take 11','',''),
-        photo('Bahia Palace 12.JPEG','Take 12','',''),
-        photo('Bahia Palace 13.JPEG','Take 13','',''),
-        photo('Bahia Palace 14.JPEG','Take 14','',''),
+        photo('Bahia Palace 1.JPEG','Inside Badi Palace','This is how we started','May 2026', true),
+        photo('Bahia Palace 2.JPEG','Nerdy Talks','Never taking anything for granted','May 2026'),
+        photo('Bahia Palace 3.JPEG','His Eyes Are Cups','The Royal walk at Bahia Palace','May 2026'),
+        photo('Bahia Palace 4.JPEG','Ikram & Salma','They scream love and joy','May 2026'),
+        photo('Bahia Palace 5.JPEG','Salma Lasri','Behold, your favorite Turkish teacher','May 2026'),
+        photo('Bahia Palace 6.JPEG','Nada & Oumaima','Blink twice if you\u2019re in danger','May 2026'),
+        photo('Bahia Palace 7.JPEG','The Whole Team','The video is boring, let\u2019s take a picture instead','May 2026'),
+        photo('Bahia Palace 8.JPEG','Yasmine Aassem','Fully Focused, or Not...','May 2026'),
+        photo('Bahia Palace 9.JPEG','Ikram El Khair','Her last name says it all','May 2026'),
+        photo('Bahia Palace 10.JPEG','Can\u2019t Just Get Enough','Lovely moments with lovely people','May 2026'),
+        photo('Bahia Palace 11.JPEG','Ibn Albanae Team & Ali','Big Smiles','May 2026'),
+        photo('Bahia Palace 12.JPEG','The Pink Kiss','Why are they wearing white?','May 2026'),
+        photo('Bahia Palace 13.JPEG','Ikram & Imane','These two always look good together','May 2026'),
+        photo('Bahia Palace 14.JPEG','Badi Palace Unedited','It was a sunny day','May 2026'),
+        photo('Bahia Palace 15.JPEG','Nada & Hicham','Try not to laugh','May 2026'),
+        photo('Bahia Palace 16.JPEG','Heart of Gold','Who doesn\u2019t love Nada?','May 2026'),
+        photo('Bahia Palace 17.JPEG','Nada & Salma','The Classroom Twins','May 2026'),
+        photo('Bahia Palace 18.JPEG','Dressed Up to the Nines','In one\u2019s most splendid attire','May 2026'),
       ]
     },
     {
@@ -798,20 +869,28 @@ const MUSEUM_DATA = {
       quoteAuthor: 'Overheard in the hallway',
       theme: 'light',
       photos: [
-        photo('CRMEF 1.JPEG','Group Picture 1','','', true),
-        photo('CRMEF 2.JPEG','Group Picture 2','',''),
-        photo('CRMEF 3.jpeg','Volleyball Team','',''),
-        photo('CRMEF 4.jpeg','Sports Event','',''),
-        photo('CRMEF 5.JPEG','Volleyball Heroes','',''),
-        photo('CRMEF 6.jpeg','Nada & Yousra','',''),
-        photo('CRMEF 7.JPEG','Blue Ramadan with the Fatimas','',''),
-        photo('CRMEF 8.JPEG','Nawal & Khadija','',''),
-        photo('CRMEF 9.JPEG','Ramadan Vibes','',''),
-        photo('CRMEF 10.JPEG','Exam Preparations','',''),
-        photo('CRMEF 11.JPEG','Outside CRMEF','',''),
-        photo('CRMEF 12.JPEG','Morning Project Defense','',''),
-        photo('CRMEF 13.JPEG','They Don\u2019t Defend, They Attack','',''),
-        photo('CRMEF 14.JPEG','Dream Team','',''),
+        photo('CRMEF 1.JPEG','First Play','','January 2026'),
+        photo('CRMEF 2.JPEG','Salma & Nada','','February 2026'),
+        photo('CRMEF 3.JPEG','Group Picture 1','','March 2026', true),
+        photo('CRMEF 4.JPEG','Group Picture 2','','March 2026'),
+        photo('CRMEF 5.JPEG','Volleyball Team','','March 2026'),
+        photo('CRMEF 6.JPEG','Sports Event','','March 2026'),
+        photo('CRMEF 7.JPEG','Volleyball Heroes','','March 2026'),
+        photo('CRMEF 8.JPEG','Nada & Yousra','','March 2026'),
+        photo('CRMEF 9.JPEG','Blue Ramadan with the Fatimas','','March 2026'),
+        photo('CRMEF 10.JPEG','Nawal & Khadija','','March 2026'),
+        photo('CRMEF 11.JPEG','Ramadan Vibes','','March 2026'),
+        photo('CRMEF 12.JPEG','First TOTM Award','','March 2026'),
+        photo('CRMEF 13.JPEG','The Quintuplets','','March 2026'),
+        photo('CRMEF 14.JPEG','Having Fun at the Sports Event','','March 2026'),
+        photo('CRMEF 15.JPEG','Preparing for the Win','','March 2026'),
+        photo('CRMEF 16.JPEG','Forcing Yousra to Take a Picture','','April 2026'),
+        photo('CRMEF 17.JPEG','Exam Preparations','','April 2026'),
+        photo('CRMEF 18.JPEG','Outside CRMEF','','June 2026'),
+        photo('CRMEF 19.JPEG','Morning Project Defense','','June 2026'),
+        photo('CRMEF 20.JPEG','They Don\u2019t Defend, They Attack','','June 2026'),
+        photo('CRMEF 21.JPEG','Dream Team','','June 2026'),
+        photo('CRMEF 22.JPEG','Last Class with Mr. Bouissane','','June 2026'),
       ]
     },
     {
@@ -821,14 +900,18 @@ const MUSEUM_DATA = {
       quoteAuthor: 'Weekend notes',
       theme: 'light',
       photos: [
-        photo('Hangouts 1.jpg','Al Kotoubia Mosque','','', true),
-        photo('Hangouts 2.JPEG','Derb Snane','',''),
-        photo('Hangouts 3.jpg','Complexe D\u2019Artisanat','',''),
-        photo('Hangouts 4.JPEG','Jamaa El Fena at Night','',''),
-        photo('Hangouts 5.JPEG','Sti Fatma Hangout','',''),
-        photo('Hangouts 6.JPEG','Sti Fatma in Style','',''),
-        photo('Hangouts 7.JPEG','Little Mama at Night','',''),
-        photo('Hangouts 8.JPEG','Late Night Hangout','',''),
+        photo('Hangouts 1.JPEG','Al Kotoubia Mosque','','January 2026', true),
+        photo('Hangouts 2.JPEG','Derb Snane','','January 2026'),
+        photo('Hangouts 3.JPEG','Complexe D\u2019Artisanat','','January 2026'),
+        photo('Hangouts 4.JPEG','Little Mama at Night','','January 2026'),
+        photo('Hangouts 5.JPEG','Jamaa El Fena at Night','','February 2026'),
+        photo('Hangouts 6.JPEG','Kind Hearts','','February 2026'),
+        photo('Hangouts 7.JPEG','Meet SWAN','','February 2026'),
+        photo('Hangouts 8.JPEG','Late Night Hangout','','March 2026'),
+        photo('Hangouts 9.JPEG','Sti Fatma Hangout','','May 2026'),
+        photo('Hangouts 10.JPEG','Sti Fatma in Style','','May 2026'),
+        photo('Hangouts 11.JPEG','Salma & Nada','','May 2026'),
+        photo('Hangouts 12.JPEG','Ben Yousef School','','May 2026'),
       ]
     },
     {
@@ -838,17 +921,19 @@ const MUSEUM_DATA = {
       quoteAuthor: 'After the closing ceremony',
       theme: 'light',
       photos: [
-        photo('Conferences 1.JPEG','Our First Conference','','', true),
-        photo('Conferences 2.JPEG','Joining with Style!','',''),
-        photo('Conferences 3.JPEG','Enjoying the Moment','',''),
-        photo('Conferences 4.JPEG','Focused Crowd','',''),
-        photo('Conferences 5.JPEG','Prof. Khadija Kairit','',''),
-        photo('Conferences 6.JPEG','G3 Teacher Trainees','',''),
-        photo('Conferences 7.JPEG','Our Fav Trio','',''),
-        photo('Conferences 8.JPEG','MATE Guests','',''),
-        photo('Conferences 9.JPEG','Lovely Crowd','',''),
-        photo('Conferences 10.JPEG','Prof. Abdelatif Laklida\u2019s Workshop','',''),
-        photo('Conferences 11.JPEG','Group Picture','',''),
+        photo('Conferences 1.JPEG','Our First Conference','','February 2026', true),
+        photo('Conferences 2.JPEG','Group Picture','','February 2026'),
+        photo('Conferences 3.JPEG','The Chaos after the Calm','','February 2026'),
+        photo('Conferences 4.JPEG','Joining with Style!','','April 2026'),
+        photo('Conferences 5.JPEG','Enjoying the Moment','','April 2026'),
+        photo('Conferences 6.JPEG','Focused Crowd','','April 2026'),
+        photo('Conferences 7.JPEG','Prof. Khadija Kairit','','April 2026'),
+        photo('Conferences 8.JPEG','G3 Teacher Trainees','','April 2026'),
+        photo('Conferences 9.JPEG','Our Favorite Trio','','April 2026'),
+        photo('Conferences 10.JPEG','MATE Presenters','','April 2026'),
+        photo('Conferences 11.JPEG','Lovely Crowd','','April 2026'),
+        photo('Conferences 12.JPEG','Prof. Abdelatif Laklida\u2019s Workshop','','April 2026'),
+        photo('Conferences 13.JPEG','Group Picture','','April 2026'),
       ]
     },
     {
@@ -871,6 +956,14 @@ const MUSEUM_DATA = {
         photo('JJK 11.PNG','Special Grade','','Creative Wing'),
         photo('JJK 12.PNG','Shikigami Summon','','Creative Wing'),
         photo('JJK 13.PNG','The Strongest Sorcerers','','Creative Wing'),
+        photo('JJK 14.PNG','Black Flash','','Creative Wing'),
+        photo('JJK 15.PNG','Malevolent Shrine','','Creative Wing'),
+        photo('JJK 16.PNG','Infinite Void','','Creative Wing'),
+        photo('JJK 17.PNG','First Years Assemble','','Creative Wing'),
+        photo('JJK 18.PNG','Cursed Womb','','Creative Wing'),
+        photo('JJK 19.PNG','Culling Game','','Creative Wing'),
+        photo('JJK 20.JPEG','Hollow Purple','','Creative Wing'),
+        photo('JJK 21.PNG','One Last Technique','','Creative Wing'),
       ]
     },
   ],
@@ -880,29 +973,41 @@ const MUSEUM_DATA = {
   // line here. `line` is a short, editable museum-style description.
   classmatesFolder: 'Portraits',
   classmates: [
+    { file:'Nawal.png',         name:'Nawal Mechachi',          line:'The Walking Queen' },
     { file:'Ali.JPEG',          name:'Ali Bikourne',            line:'One for All' },
-    { file:'Abdellatif.JPEG',   name:'Abdellatif Amjoud',       line:'The Memories Collector' },
+    { file:'Abat.jpeg',         name:'Abdellah Abat',           line:'The Adventurer' },
+    { file:'Abdellatif.JPEG',   name:'Addellatif Amjoud',       line:'The Memories Collector' },
     { file:'Abdelmounaim.JPEG', name:'Abdelmounaim Daoudi',     line:'Our Big Brother' },
     { file:'Amale.jpeg',        name:'Amale Meziane',           line:'The One Who Speaks for Everyone' },
+    { file:'Aya.JPEG',          name:'Aya El Ansari',           line:'Coquette' },
     { file:'Aya M.JPEG',        name:'Aya El Monaddame',        line:'Can\u2019t Hate Her' },
     { file:'Doha.JPEG',         name:'Douha Erraji',            line:'Dulcet' },
     { file:'Fati B.JPEG',       name:'Fatima-ezzahrae Benderraz', line:'The Happiest in Class' },
     { file:'Fati K.JPEG',       name:'Titima',                  line:'The Sweetest Ever' },
     { file:'Fatine.JPEG',       name:'Fatine',                  line:'Known as Fatine, loved as Fatine' },
+    { file:'Hamza.JPEG',        name:'Hamza Ouaghamou',         line:'The Tech Genius' },
+    { file:'Hicham.JPEG',       name:'Hicham El Idrissi Faouzi', line:'Here to make you laugh' },
+    { file:'IMG_8125.JPEG',     name:'Ihssan Chahid',           line:'The Aesthetic One' },
+    { file:'Ijioui.jpeg',       name:'Abdellah Ijioui',         line:'The Commentator' },
     { file:'Ikram.JPEG',        name:'Ikram El Khair',          line:'The Cutest in Class' },
     { file:'Imane E.JPEG',      name:'Imane El Ghait',          line:'The Fun Maker' },
+    { file:'imane M.jpeg',      name:'Imane Moumni',            line:'Yellow Beanie' },
     { file:'Inass.JPEG',        name:'Inass Boubtita',          line:'Buttercup' },
     { file:'Khadija B.JPEG',    name:'Khadija Bazag',           line:'The Green Side of the Class' },
+    { file:'Khaoula.jpeg',      name:'Khaoula Erraoui',         line:'The Gracious One' },
+    { file:'Lamia.JPEG',        name:'Lamia',                   line:'Absolute Kindness' },
     { file:'Maha.JPEG',         name:'Maha Daoudi',             line:'The One with the Soothing Quranic Voice' },
     { file:'Mariam.JPEG',       name:'Mariam Abram',            line:'Sweet Pea' },
     { file:'Nada.JPEG',         name:'Nada Bhioui',             line:'Decolonial Princess' },
     { file:'Nadira.JPEG',       name:'Nadira El Mahrour',       line:'The Most Innocent' },
-    { file:'Nawal.png',         name:'Nawal Mechachi',          line:'The Walking Queen' },
     { file:'Nordine.JPEG',      name:'Nordine Bougrir',         line:'The Hardworking' },
     { file:'Oumaima.JPEG',      name:'Oumaima Barhioui',        line:'Kindest Heart' },
+    { file:'Salah.JPEG',        name:'Salah Eddine Jbaira',     line:'Speaks with every accent' },
     { file:'Salma L.JPEG',      name:'Salma Lasri',             line:'Our Favorite Teacher' },
+    { file:'Samia.jpeg',        name:'Samia Lemjahed',          line:'Positivity Bomb' },
     { file:'Yasmine A.JPEG',    name:'Yasmine Aassem',          line:'Sunshine' },
     { file:'Yasmine D.JPEG',    name:'Yasmine Diouane',         line:'The Caring One' },
+    { file:'Zineb.jpeg',        name:'Zineb Ben El Goussa',     line:'The Singing Mermaid' },
   ],
 
   // ---- Hidden gallery: Behind the Scenes -------------------------------------
@@ -1133,6 +1238,23 @@ let currentRoom = MUSEUM_DATA.galleries[0].id;
 const hallway = document.getElementById('hallway');
 const hallwayLabel = document.getElementById('hallwayLabel');
 const museumEl = document.getElementById('museum');
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const navRail = document.getElementById('navRail');
+const navBackdrop = document.getElementById('navBackdrop');
+
+function openDrawer(){
+  navRail.classList.add('open');
+  navBackdrop.classList.add('open');
+  hamburgerBtn.setAttribute('aria-expanded', 'true');
+}
+function closeDrawer(){
+  navRail.classList.remove('open');
+  navBackdrop.classList.remove('open');
+  hamburgerBtn.setAttribute('aria-expanded', 'false');
+}
+hamburgerBtn.addEventListener('click', openDrawer);
+document.getElementById('navCloseBtn').addEventListener('click', closeDrawer);
+navBackdrop.addEventListener('click', closeDrawer);
 
 function activateRoom(id){
   const target = document.getElementById('room-' + id);
@@ -1146,6 +1268,8 @@ function activateRoom(id){
     btn.classList.toggle('active', btn.dataset.target === id);
   });
   museumEl.classList.toggle('is-final', id === 'final');
+  hamburgerBtn.classList.toggle('is-final', id === 'final');
+  navRail.classList.toggle('is-final', id === 'final');
 
   window.scrollTo({ top:0, behavior:'auto' });
   refreshObservedElements();
@@ -1167,8 +1291,12 @@ document.addEventListener('click', (e) => {
   if(btn){
     goToRoom(btn.dataset.target);
     closeMap();
+    closeDrawer();
   }
-  if(e.target.closest('#navBrand')){ showEntrance(); }
+  if(e.target.closest('#navBrand')){ showEntrance(); closeDrawer(); }
+});
+document.addEventListener('keydown', (e) => {
+  if(e.key === 'Escape' && navRail.classList.contains('open')) closeDrawer();
 });
 
 /* ============================================================================
@@ -1346,11 +1474,17 @@ beginBtn.addEventListener('click', beginTour);
 const ambientAudio = document.getElementById('ambientAudio');
 let audioOn = false;
 
+// two icon states: a muted speaker (crossed out) and a playing speaker (sound waves)
+const SOUND_ICON_MUTED = '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><line x1="16" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="16" y2="15"/>';
+const SOUND_ICON_PLAYING = '<path d="M11 5 6 9H2v6h4l5 4V5Z"/><path d="M15.8 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a8.5 8.5 0 0 1 0 12"/>';
+
 function setAudioUI(){
   document.getElementById('soundLabelEntrance').textContent = audioOn ? 'Sound on' : 'Sound off';
   document.getElementById('soundToggleEntrance').setAttribute('aria-pressed', String(audioOn));
   document.getElementById('soundLabelRail').textContent = audioOn ? 'Mute music' : 'Play music';
   document.getElementById('soundToggleRail').setAttribute('aria-pressed', String(audioOn));
+  document.getElementById('soundIconEntrance').innerHTML = audioOn ? SOUND_ICON_PLAYING : SOUND_ICON_MUTED;
+  document.getElementById('soundIconRail').innerHTML = audioOn ? SOUND_ICON_PLAYING : SOUND_ICON_MUTED;
 }
 function tryPlayAudio(){
   if(!audioOn) return;
