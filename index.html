@@ -267,7 +267,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .entrance-hint{ margin-top:18px; font-size:12px; color:var(--ink-faint); letter-spacing:.04em; }
 
 .sound-toggle{
-  position:absolute; top:26px; right:26px; z-index:5;
+  position:absolute; top:calc(26px + env(safe-area-inset-top)); right:26px; z-index:5;
   display:flex; align-items:center; gap:10px;
   background:transparent; border:1px solid var(--wall-shadow);
   color:var(--ink-soft);
@@ -332,6 +332,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   z-index:80;
   display:flex; flex-direction:column;
   padding:30px 0;
+  padding-top:calc(30px + env(safe-area-inset-top));
   transition:opacity .8s ease, visibility .8s ease, transform .4s var(--ease-museum);
 }
 .nav-close{
@@ -396,7 +397,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 
 /* hamburger + backdrop for the mobile slide-in sidebar */
 .hamburger{
-  display:none; position:fixed; top:18px; left:18px; z-index:90;
+  display:none; position:fixed; top:calc(18px + env(safe-area-inset-top)); left:18px; z-index:90;
   width:44px; height:44px; border-radius:50%;
   background:var(--ink); color:var(--paper); border:1px solid rgba(255,255,255,.15);
   align-items:center; justify-content:center; box-shadow:var(--shadow-frame);
@@ -418,6 +419,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 .room{
   min-height:100vh;
   padding:96px 6vw 120px;
+  padding-top:calc(96px + env(safe-area-inset-top));
   display:none;
   opacity:0; transform:translateY(24px) scale(.99);
 }
@@ -580,7 +582,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
 
 .lb-btn{ position:absolute; background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.22); color:var(--paper); width:46px; height:46px; border-radius:50%; display:flex; align-items:center; justify-content:center; transition:background .3s, transform .3s; }
 .lb-btn:hover{ background:rgba(255,255,255,.18); transform:scale(1.06); }
-.lb-close{ top:22px; right:22px; }
+.lb-close{ top:calc(22px + env(safe-area-inset-top)); right:22px; }
 .lb-prev{ left:18px; top:50%; transform:translateY(-50%); }
 .lb-next{ right:18px; top:50%; transform:translateY(-50%); }
 .lb-btn svg{ width:18px; height:18px; }
@@ -670,11 +672,11 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   clip-path:circle(145% at var(--iris-x,50%) var(--iris-y,50%));
 }
 
-.journey-progress{ position:absolute; top:0; left:0; right:0; height:3px; background:rgba(255,255,255,.12); z-index:2; }
+.journey-progress{ position:absolute; top:env(safe-area-inset-top); left:0; right:0; height:3px; background:rgba(255,255,255,.12); z-index:2; }
 .journey-progress-bar{ height:100%; width:0%; background:var(--brass-light); transition:width .4s linear; }
 
 .journey-topbar{
-  position:absolute; top:22px; left:26px; right:26px; z-index:2;
+  position:absolute; top:calc(22px + env(safe-area-inset-top)); left:26px; right:26px; z-index:2;
   display:flex; align-items:center; justify-content:space-between;
 }
 .journey-chapter{
@@ -760,7 +762,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   .nav-backdrop{ display:block; }
   .nav-mobile{ display:block; }
   #museum{ padding-left:0; padding-bottom:86px; }
-  .room{ padding:70px 6vw 100px; }
+  .room{ padding:70px 6vw 100px; padding-top:calc(70px + env(safe-area-inset-top)); }
 }
 @media (max-width:680px){
   /* one artwork per row, generous breathing room, no squeezing */
@@ -768,8 +770,9 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   .frame{ max-width:420px; margin:0 auto; }
   .exhibit.featured .frame{ max-width:460px; }
   .classmates-wall{ column-count:1; max-width:380px; margin:0 auto; }
-  .sound-toggle{ top:16px; right:16px; padding:8px 12px; }
-  .hamburger{ top:16px; left:16px; width:42px; height:42px; }
+  .sound-toggle{ top:calc(16px + env(safe-area-inset-top)); right:16px; padding:8px 12px; }
+  .hamburger{ top:calc(16px + env(safe-area-inset-top)); left:16px; width:42px; height:42px; }
+  .journey-topbar{ top:calc(16px + env(safe-area-inset-top)); left:16px; right:16px; }
 
   /* cleaner, smaller map button — icon only, no crowding */
   .map-toggle{ width:44px; height:44px; right:14px; bottom:92px; gap:0; }
@@ -777,7 +780,7 @@ a:focus-visible, button:focus-visible, [tabindex]:focus-visible{
   .map-toggle span{ display:none; }
 }
 @media (max-width:520px){
-  .sound-toggle{ top:16px; right:16px; padding:8px 12px; }
+  .sound-toggle{ top:calc(16px + env(safe-area-inset-top)); right:16px; padding:8px 12px; }
 }
 
 .skip-link{ position:absolute; left:-999px; top:0; background:var(--ink); color:var(--paper); padding:10px 16px; z-index:999; }
