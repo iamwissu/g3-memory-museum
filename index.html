@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><link rel="icon" type="image/png" href="favicon.png">
+
+<!-- ================= PWA / "Add to Home Screen" setup ================= -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#221c16">
+<!-- iOS reads these directly; Android/desktop mainly use manifest.json above -->
+<link rel="apple-touch-icon" href="favicon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="CRMEF Museum">
+<!-- ======================================================================= -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CRMEF Memory Museum</title>
@@ -1834,6 +1844,15 @@ document.addEventListener('keydown', (e) => {
 })();
 
 window.addEventListener('load', () => { refreshObservedElements(); });
+</script>
+<!-- Registers the service worker so the site can be installed / used offline.
+     Kept separate from the main script above on purpose. -->
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').catch(() => { /* fine on browsers without support */ });
+  });
+}
 </script>
 </body>
 </html>
